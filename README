@@ -1,0 +1,6 @@
+To run app:
+
+1. Make sure node is installed in the system
+2. Navigate to this directory via command line.
+3. Install dependencies using 'npm i' command 
+4. Run app using 'npm start' command
