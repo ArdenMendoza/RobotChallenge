@@ -29,8 +29,7 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
                 const c2 = command.indexOf(',')
                 const x = parseInt(command.substring(c1 + 1, c2))
                 const y = parseInt(command.substring(c2 + 1, command.length))
-                if (!isNaN(x) && !isNaN(y)) {
-                    console.log('hooray!')
+                if (!isNaN(x) && !isNaN(y) && (x >= 1 && x <= 5) && (y >= 1 && y <= 5)) {
                     return {
                         isValid: true, newStatus: { ...botStatus, x, y }
                     }
@@ -38,7 +37,6 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
             }
             return { isValid: false }
     }
-    return { isValid: false }
 }
 
 var command = ''
@@ -52,7 +50,7 @@ captureInput((char: string) => {
         command = command.replace('SPACE', ' ')
         const { isValid, newStatus } = validateAndExecute(_command, botStatus)
 
-        // console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
+        console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
         botStatus = renderBot(isValid && newStatus ? newStatus : botStatus)
         command = ''
     }
