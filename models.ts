@@ -5,3 +5,7 @@ export interface iBotStatus {
     y: number,
     direction: Direction
 }
+export interface iObstacle {
+    x: number,
+    y: number
+}

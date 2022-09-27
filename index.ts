@@ -1,4 +1,4 @@
-import { Direction, iBotStatus } from './models'
+import { Direction, iBotStatus, iObstacle } from './models'
 import { captureInput } from './onCommandCapture'
 import { DirectionEnum, renderBot } from './renderer'
 
@@ -8,6 +8,7 @@ var botStatus: iBotStatus = {
     direction: 'NORTH'
 }
 
+var obstacles: iObstacle[] = [{ x: 2, y: 2 }]
 
 export const validateAndExecute = (command: string, botStatus: iBotStatus): { isValid: boolean, newStatus?: iBotStatus } => {
     const { x, y, direction } = botStatus
@@ -16,11 +17,17 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
         case 'RIGHT':
             return { isValid: true, newStatus: { ...botStatus, direction: DirectionEnum[botStatus.direction][command] as Direction } }
         case 'MOVE':
-            if (direction === 'NORTH' && y > 1) return { isValid: true, newStatus: { ...botStatus, y: y - 1 } }
-            if (direction === 'SOUTH' && y < 5) return { isValid: true, newStatus: { ...botStatus, y: y + 1 } }
-            if (direction === 'WEST' && x > 1) return { isValid: true, newStatus: { ...botStatus, x: x - 1 } }
-            if (direction === 'EAST' && x < 5) return { isValid: true, newStatus: { ...botStatus, x: x + 1 } }
-            return { isValid: false }
+            let nextPosition = { x: botStatus.x, y: botStatus.y }
+            if (direction === 'NORTH' && y > 1) nextPosition = { x: botStatus.x, y: y - 1 }
+            if (direction === 'SOUTH' && y < 5) nextPosition = { x: botStatus.x, y: y + 1 }
+            if (direction === 'WEST' && x > 1) nextPosition = { x: x - 1, y: botStatus.y }
+            if (direction === 'EAST' && x < 5) nextPosition = { x: x + 1, y: botStatus.y }
+
+            return {
+                isValid: ['NORTH', 'WEST', 'SOUTH', 'EAST'].includes(direction) &&
+                    !obstacles.some(s => s.x === nextPosition.x && s.y === nextPosition.y),
+                newStatus: { ...botStatus, ...nextPosition }
+            }
         case 'REPORT':
             return { isValid: true, newStatus: botStatus }
         default:
@@ -38,8 +45,8 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
             }
             return { isValid: false }
     }
-    return { isValid: false }
 }
+
 
 var command = ''
 captureInput((char: string) => {
@@ -51,8 +58,8 @@ captureInput((char: string) => {
         const _command = command.toUpperCase()
         command = command.replace('SPACE', ' ')
         const { isValid, newStatus } = validateAndExecute(_command, botStatus)
-
-        // console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
+        console.log('')
+        console.log(`Command(${_command}) is: `, isValid ? 'VALID' : '!! INVALID !!')
         botStatus = renderBot(isValid && newStatus ? newStatus : botStatus)
         command = ''
     }
