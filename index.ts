@@ -24,6 +24,13 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
         case 'REPORT':
             return { isValid: true, newStatus: botStatus }
         default:
+            // if (command.includes('PLACE')) {
+            //     const c1 = command.indexOf(' ')
+            //     const c2 = command.indexOf(',')
+            //     const x = command.substring(c1 + 1, c2)
+            //     const y = command.substring(c2, command.length)
+            //     console.log('place command detected! ', { command, c1, c2, x, y })
+            // }
             return { isValid: false }
     }
 }
@@ -31,14 +38,23 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
 var command = ''
 captureInput((key: string) => {
     if (!['return', 'enter'].includes(key)) {
-        command = command + key
+        switch (key) {
+            case 'space':
+                command = command + ' '
+                break
+            default:
+                command = command + key
+                break
+        }
     }
 
     if (key === 'return') {
         const _command = command.toUpperCase()
+        command = command.replace('SPACE', ' ')
+        // console.log({ _command, command })
         const { isValid, newStatus } = validateAndExecute(_command, botStatus)
 
-        console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
+        // console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
         botStatus = renderBot(isValid && newStatus ? newStatus : botStatus)
         command = ''
     }
