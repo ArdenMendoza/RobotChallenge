@@ -9,7 +9,7 @@ export const captureInput = (onKeyPressCapture: (keyName: string) => void) => {
         // if (char === "h") console.log("Hello World!")
         // if (char === "q") process.exit()
         // if (evt.ctrl === true && evt.name === 'c') process.exit(0)
-        onKeyPressCapture(evt.name)
+        onKeyPressCapture(char)
     })
 }
 
