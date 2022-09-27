@@ -1,6 +1,6 @@
 import { iBotStatus } from "./models"
 
-export const renderBot = (botStatus: iBotStatus) => {
+export const renderBot = (botStatus: iBotStatus): iBotStatus => {
     console.log(' ')
     console.log('---------------------')
     botStatus.y === 1 ? renderRow(botStatus) : emptyRow()
@@ -14,6 +14,7 @@ export const renderBot = (botStatus: iBotStatus) => {
     botStatus.y === 5 ? renderRow(botStatus) : emptyRow()
     console.log('---------------------')
     console.log(' ')
+    return botStatus
 }
 
 const emptyRow = () => {

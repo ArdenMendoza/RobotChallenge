@@ -1,6 +1,7 @@
 import { captureInput, captureInput2 } from './onCommandCapture'
 import { Command, Direction, iBotStatus } from './models'
 import { DirectionEnum, renderBot } from './renderer'
+import { TypePredicateKind } from 'typescript'
 
 var botStatus: iBotStatus = {
     x: 3,
@@ -14,25 +15,17 @@ export const validateAndExecute = (command: string, botStatus: iBotStatus): { is
     switch (command) {
         case 'LEFT':
         case 'RIGHT':
-            return { isValid: true, newStatus: getBotStatus(command, botStatus) }
+            return { isValid: true, newStatus: { ...botStatus, direction: DirectionEnum[botStatus.direction][command] as Direction } }
         case 'MOVE':
-            if (direction === 'NORTH' && y > 1) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, y: y - 1 }) }
-            if (direction === 'SOUTH' && y < 5) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, y: y + 1 }) }
-            if (direction === 'WEST' && x > 1) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, x: x - 1 }) }
-            if (direction === 'EAST' && x < 5) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, x: x + 1 }) }
+            if (direction === 'NORTH' && y > 1) return { isValid: true, newStatus: { ...botStatus, y: y - 1 } }
+            if (direction === 'SOUTH' && y < 5) return { isValid: true, newStatus: { ...botStatus, y: y + 1 } }
+            if (direction === 'WEST' && x > 1) return { isValid: true, newStatus: { ...botStatus, x: x - 1 } }
+            if (direction === 'EAST' && x < 5) return { isValid: true, newStatus: { ...botStatus, x: x + 1 } }
             return { isValid: false }
+        case 'REPORT':
+            return { isValid: true, newStatus: botStatus }
         default:
             return { isValid: false }
-    }
-}
-
-const getBotStatus = (command: Command, botStatus: iBotStatus): iBotStatus => {
-    switch (command) {
-        case 'LEFT':
-        case 'RIGHT':
-            return { ...botStatus, direction: DirectionEnum[botStatus.direction][command] as Direction }
-        default:
-            return botStatus
     }
 }
 
@@ -41,13 +34,15 @@ captureInput((key: string) => {
     if (!['return', 'enter'].includes(key)) {
         command = command + key
     }
+
     if (key === 'return') {
         const _command = command.toUpperCase()
         const { isValid, newStatus } = validateAndExecute(_command, botStatus)
-        console.log({ isValid, newStatus })
+
         if (isValid && newStatus) {
-            renderBot(newStatus)
-            botStatus = newStatus
+            botStatus = renderBot(newStatus)
+        } else {
+            console.log('That move is invalid')
         }
         command = ''
     }
