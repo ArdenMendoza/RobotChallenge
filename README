@@ -1,6 +1,7 @@
 To run app:
 
 1. Make sure node is installed in the system
-2. Navigate to this directory via command line.
-3. Install dependencies using 'npm i' command 
-4. Run app using 'npm start' command
+2. Make sure to also have ts-node installed globally in the system
+3. Navigate to this directory via command line.
+4. Install dependencies using 'npm i' command 
+5. Run app using 'npm start' command
