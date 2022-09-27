@@ -1,7 +1,6 @@
-import { captureInput, captureInput2 } from './onCommandCapture'
-import { Command, Direction, iBotStatus } from './models'
+import { Direction, iBotStatus } from './models'
+import { captureInput } from './onCommandCapture'
 import { DirectionEnum, renderBot } from './renderer'
-import { TypePredicateKind } from 'typescript'
 
 var botStatus: iBotStatus = {
     x: 3,
@@ -39,11 +38,8 @@ captureInput((key: string) => {
         const _command = command.toUpperCase()
         const { isValid, newStatus } = validateAndExecute(_command, botStatus)
 
-        if (isValid && newStatus) {
-            botStatus = renderBot(newStatus)
-        } else {
-            console.log('That move is invalid')
-        }
+        console.log('Move is: ', isValid ? 'VALID' : '!! INVALID !!')
+        botStatus = renderBot(isValid && newStatus ? newStatus : botStatus)
         command = ''
     }
 
