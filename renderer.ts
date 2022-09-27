@@ -21,9 +21,9 @@ const emptyRow = () => {
 }
 
 const renderRow = (botStatus: iBotStatus) => {
-    const { y, direction } = botStatus
+    const { x, direction } = botStatus
     const robot = DirectionIconEnum[direction]
-    switch (y) {
+    switch (x) {
         case 1:
             console.log(`| ${robot} |   |   |   |   |`)
             break

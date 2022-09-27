@@ -9,17 +9,17 @@ var botStatus: iBotStatus = {
 }
 
 
-export const isCommandValid = (command: Command, botStatus: iBotStatus): { isValid: boolean, newStatus?: iBotStatus } => {
+export const validateAndExecute = (command: string, botStatus: iBotStatus): { isValid: boolean, newStatus?: iBotStatus } => {
     const { x, y, direction } = botStatus
     switch (command) {
         case 'LEFT':
         case 'RIGHT':
             return { isValid: true, newStatus: getBotStatus(command, botStatus) }
         case 'MOVE':
-            if (direction === 'NORTH' && y > 1) return { isValid: true, newStatus: getBotStatus(command, botStatus) }
-            if (direction === 'SOUTH' && y < 5) return { isValid: true, newStatus: getBotStatus(command, botStatus) }
-            if (direction === 'WEST' && x > 1) return { isValid: true, newStatus: getBotStatus(command, botStatus) }
-            if (direction === 'EAST' && x < 5) return { isValid: true, newStatus: getBotStatus(command, botStatus) }
+            if (direction === 'NORTH' && y > 1) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, y: y - 1 }) }
+            if (direction === 'SOUTH' && y < 5) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, y: y + 1 }) }
+            if (direction === 'WEST' && x > 1) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, x: x - 1 }) }
+            if (direction === 'EAST' && x < 5) return { isValid: true, newStatus: getBotStatus(command, { ...botStatus, x: x + 1 }) }
             return { isValid: false }
         default:
             return { isValid: false }
@@ -42,8 +42,8 @@ captureInput((key: string) => {
         command = command + key
     }
     if (key === 'return') {
-        console.log('executing commands', command.toUpperCase())
-        const { isValid, newStatus } = isCommandValid(command.toUpperCase() as any, botStatus)
+        const _command = command.toUpperCase()
+        const { isValid, newStatus } = validateAndExecute(_command, botStatus)
         console.log({ isValid, newStatus })
         if (isValid && newStatus) {
             renderBot(newStatus)
